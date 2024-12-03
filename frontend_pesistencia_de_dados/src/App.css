@@ -1,0 +1,77 @@
+.main{
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(243, 253, 253);
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card{
+  width: 55%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 -4px 8px rgba(0, 0, 0, 0.1), 4px 0 8px rgba(0, 0, 0, 0.1), -4px 0 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.containerTipo{
+  width: 70%;
+  height: 11vh;
+  display: flex;
+  justify-content: space-around;
+  margin-left: auto;
+  margin-right: auto;
+}
+h2{
+  user-select: none;
+}
+h2:hover{  
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+
+#sublinhado{
+  border-bottom: 2px solid #000;
+}
+
+.containerForm{  
+  width: 100%;
+  height: 89vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.containerInput{  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputStyle{  
+  width: 16rem;
+  height: 1.8rem;
+  border-radius: 4px;
+  border: 0.135em solid rgb(202, 202, 202);
+  margin-bottom: 1.8rem;
+}
+#inputNome{
+  margin-top: 2rem;
+}
+
+.btnSalvar{
+  background-color: rgba(14, 153, 14, 0.699);
+  color: white;
+  width: 16rem;
+  height: 1.8rem;
+  border-radius: 4px;
+  border: 0.135em solid rgb(202, 202, 202);
+}
+
+.btnSalvar:hover{
+  cursor: pointer;
+  background-color: rgba(14, 153, 14, 0.822);
+}
