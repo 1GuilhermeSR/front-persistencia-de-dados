@@ -1,31 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from "axios";
 import './App.css';
-import Modal from 'react-modal';
+import Comments from './comments/comments';
 
 function App() {
   const [aluno, setAluno] = useState({
+    id: 0,
     nome: "",
     email: "",
     idade: "",
     link_image: null,
   });
   const [professor, setProfessor] = useState({
+    id: 0,
     nome: "",
     cargo: "",
     email: "",
     senha: "",
     link_image: null,
   });
-  const [comentario, setComentario] = useState({
-    texto: "",
+  const [comment, setComment] = useState({
+    id_professor: 0,
+    id_aluno: 0,
+    comentario: "",
   });
   const [previewImage, setPreviewImage] = useState("");
   const [form, setForm] = useState("professor");
 
   const urlProfessor = "localhost:4000/api/professor";
   const urlAluno = "localhost:4000/api/aluno";
-  const urlComentario = "localhost:4000/api/comments";
+  const urlComment = "localhost:4000/api/comments";
+  
+  const [alunos, setAlunos] = useState([]);
+  const [selectedAluno, setSelectedAluno] = useState('');
+  const [showComments, setShowComments] = useState(false);
+
+  useEffect(() => {
+    axios.get(urlAluno)
+      .then(response => {
+        setAlunos(response.data);
+      })
+      .catch(error => {
+        console.error("Erro ao carregar alunos:", error);
+      });
+  }, []);
 
   function limparForm() {
     setProfessor({
@@ -36,13 +54,16 @@ function App() {
       link_image: null,
     });
     setAluno({
+      id: 0,
       nome: "",
       email: "",
       idade: "",
       link_image: null,
     });
-    setComentario({
-      text: "",
+    setComment({
+      id_professor: 0,
+      id_aluno: 0,
+      comentario: '',
     });
     setPreviewImage("");
   }
@@ -118,10 +139,10 @@ function App() {
 
   function salvarComentatio() {
     const formData = new FormData();
-    formData.append("texto", comentario.texto);
+    formData.append("comentario", comment.comentario);
 
     axios
-      .post(urlComentario, formData, {
+      .post(urlComment, formData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -179,10 +200,35 @@ function App() {
             </div>) : (
           <div className='containerForm'>
             <div className='containerInput'>
-              <textarea value={comentario.texto} onChange={(e) => setComentario({ ...comentario, texto: e.target.value })} placeholder='Texto' className="inputStyle" id='inputTexto'></textarea>
+              <div className="dropdown-container">
+                <select 
+                  value={selectedAluno} 
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    if (selectedValue !== "") {
+                      setSelectedAluno(selectedValue);
+                      setShowComments(false); 
+                      setTimeout(() => setShowComments(true), 0); 
+                    } else {
+                      setShowComments(false); 
+                    }
+                  }}
+                  className="inputStyle"
+                >
+                  <option value="">Selecione um aluno</option>
+                  {alunos.map(aluno => (
+                    <option key={aluno._id} value={aluno._id}>
+                      {aluno.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <textarea value={comment.comentario} onChange={(e) => setComment({ ...comment, comentario: e.target.value })} placeholder='Texto' className="inputStyle" id='inputText'></textarea>
               <button className='btnSalvar' onClick={salvarComentatio}>Salvar</button>
+              {showComments && <Comments postId={selectedAluno} />}
             </div>
-          </div>)}
+          </div>
+        )}
       </div>
     </div>
   );
