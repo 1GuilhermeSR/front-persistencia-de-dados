@@ -5,18 +5,16 @@ const Comments = ({ id_aluno: idAluno }) => {
     const [comments, setListaComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const urlComment = "localhost:4000/api/comments";
+    const urlComment = "http://localhost:4000/api/comments";
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
                 const response = await axios.get(`${urlComment}/${idAluno}`);
-                if (!response.ok) {
+                if (response.status !== 200) {
                     throw new Error('Failed to fetch comments');
                 }
-                const data = await response.json();
-
-                setListaComments(data);
+                setListaComments(Array.isArray(response.data) ? response.data : [response.data]);
                 setLoading(false);
             } catch (err) {
                 setError(err.message);
@@ -62,9 +60,9 @@ const Comments = ({ id_aluno: idAluno }) => {
                 <p>Sem comentarios</p>
             ) : (
                 comments.map(comment => (
-                    <div key={comment.aluno_id} className="comment-box">
+                    <div key={comment._id} className="comment-box">
                         <p>{comment.comentario}</p>
-                        <button onClick={() => removerComentario(comment.aluno_id)}>Deletar</button>
+                        <button onClick={() => removerComentario(comment._id)}>Deletar</button>
                     </div>
                 ))
             )}

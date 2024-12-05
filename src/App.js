@@ -34,9 +34,9 @@ function App() {
   const [listaAlunos, setListaAlunos] = useState([]);
   const [selectedAluno, setSelectedAluno] = useState('');
   const [showComments, setShowComments] = useState(false);
-  const urlProfessor = "localhost:4000/api/professor";
-  const urlAluno = "localhost:4000/api/aluno";
-  const urlComment = "localhost:4000/api/comments";
+  const urlProfessor = "http://localhost:4000/api/professor";
+  const urlAluno = "http://localhost:4000/api/aluno";
+  const urlComment = "http://localhost:4000/api/comments";
 
   useEffect(() => {
     buscarProfessores()
@@ -114,11 +114,11 @@ function App() {
 
   function salvarProfessor() {
     const formData = new FormData();
-    formData.append("nome", professor.nome);
-    formData.append("cargo", professor.cargo);
-    formData.append("email", professor.email);
-    formData.append("senha", professor.senha);
-    formData.append("link_image", professor.link_image);
+    formData.append("NOME", professor.nome);
+    formData.append("CARGO", professor.cargo);
+    formData.append("EMAIL", professor.email);
+    formData.append("PASSWORD", professor.senha);
+    formData.append("LINK_IMAGE", professor.link_image);
 
     axios
       .post(urlProfessor, formData, {
@@ -159,6 +159,7 @@ function App() {
 
   function salvarComentatio() {
     const formData = new FormData();
+    formData.append("id_aluno", selectedAluno);
     formData.append("comentario", comment.comentario);
 
     axios
@@ -299,20 +300,20 @@ function App() {
               </thead>
               <tbody>
                 {listaProfessores.map((professor) => (
-                  <tr key={professor.id}>
-                    <td>{professor.id}</td>
-                    <td>{professor.nome}</td>
-                    <td>{professor.cargo}</td>
-                    <td>{professor.email}</td>
-                    <td>{professor.link_image}</td>
+                  <tr key={professor.ID}>
+                    <td>{professor.ID}</td>
+                    <td>{professor.NOME}</td>
+                    <td>{professor.CARGO}</td>
+                    <td>{professor.EMAIL}</td>
+                    <td><img src={professor.LINK_IMAGE} alt='Professor Image'/></td>
                     <td>
                       <FaRegEdit
                         className="iconEdit"
-                        onClick={() => editarProfessor(professor.id)}
+                        onClick={() => editarProfessor(professor.ID)}
                       />
                       <CiTrash
                         className="iconDelete"
-                        onClick={() => removerProfessor(professor.id)}
+                        onClick={() => removerProfessor(professor.ID)}
                       />
                     </td>
                   </tr>
@@ -336,12 +337,12 @@ function App() {
               </thead>
               <tbody>
                 {listaAlunos.map((aluno) => (
-                  <tr key={aluno.id}>
-                    <td>{aluno.id}</td>
-                    <td>{aluno.nome}</td>
-                    <td>{aluno.idade}</td>
-                    <td>{aluno.email}</td>
-                    <td>{aluno.link_image}</td>
+                  <tr key={aluno.ID}>
+                    <td>{aluno.ID}</td>
+                    <td>{aluno.NOME}</td>
+                    <td>{aluno.IDADE}</td>
+                    <td>{aluno.EMAIL}</td>
+                    <td><img src={aluno.LINK_IMAGE} alt='Aluno Image'/></td>
                     <td>
                       <FaRegEdit
                         className="iconEdit"
@@ -361,6 +362,7 @@ function App() {
         ) : (
           <div>
             <select
+              defaultValue=""
               value={selectedAluno}
               onChange={(e) => {
                 const selectedValue = e.target.value;
@@ -376,8 +378,8 @@ function App() {
             >
               <option value="">Selecione um aluno</option>
               {listaAlunos.map(aluno => (
-                <option key={aluno._id} value={aluno._id}>
-                  {aluno.nome}
+                <option key={aluno.ID} value={aluno.ID}>
+                  {aluno.NOME}
                 </option>
               ))}
             </select>
@@ -434,6 +436,7 @@ function App() {
                   <div className='containerInput'>
                     <div className="dropdown-container" id='inputNome'>
                       <select
+                        defaultValue=""
                         value={selectedAluno}
                         onChange={(e) => {
                           const selectedValue = e.target.value;
@@ -443,8 +446,8 @@ function App() {
                       >
                         <option value="">Selecione um aluno</option>
                         {listaAlunos.map(aluno => (
-                          <option key={aluno._id} value={aluno._id}>
-                            {aluno.nome}
+                          <option key={aluno.ID} value={aluno.ID}>
+                            {aluno.NOME}
                           </option>
                         ))}
                       </select>

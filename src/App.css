@@ -241,6 +241,13 @@ td{
   font-size: 0.9em;
   white-space: nowrap;
 }
+
+td img{
+  width: 100px;
+  height: 20%;
+  border-radius: 50%;
+}
+
 table{
   width: 98%;
   height: 400px;
