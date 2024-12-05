@@ -1,0 +1,290 @@
+.main{
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(243, 253, 253);
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainCadastro{
+  width: 50%;
+  height: 50vh;
+  background-color: rgb(243, 253, 253);
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 -4px 8px rgba(0, 0, 0, 0.1), 4px 0 8px rgba(0, 0, 0, 0.1), -4px 0 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
+
+.card{
+  width: 32%;
+  height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 -4px 8px rgba(0, 0, 0, 0.1), 4px 0 8px rgba(0, 0, 0, 0.1), -4px 0 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 -4px 8px rgba(0, 0, 0, 0.1), 4px 0 8px rgba(0, 0, 0, 0.1), -4px 0 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  position: fixed; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+}
+
+.containerTipo{
+  width: 70%;
+  height: 11vh;
+  display: flex;
+  justify-content: space-around;
+  margin-left: auto;
+  margin-right: auto;
+}
+h2{
+  user-select: none;
+}
+h2:hover{  
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+
+#sublinhado{
+  border-bottom: 2px solid #000;
+}
+
+.containerForm{  
+  width: 100%;
+  height: 89vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.containerInput{  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputStyle{  
+  width: 16rem;
+  height: 1.8rem;
+  border-radius: 4px;
+  border: 0.135em solid rgb(202, 202, 202);
+  margin-bottom: 1.8rem;
+}
+#inputNome{
+  margin-top: 2rem;
+}
+
+.btnSalvar{
+  background-color: rgba(14, 153, 14, 0.699);
+  color: white;
+  width: 16rem;
+  height: 1.8rem;
+  border-radius: 4px;
+  border: 0.135em solid rgb(202, 202, 202);
+}
+
+.btnSalvar:hover{
+  cursor: pointer;
+  background-color: rgba(14, 153, 14, 0.822);
+}
+
+.btnFechar{
+  background-color: rgba(240, 240, 240, 0.699);
+  color: black;
+  width: 16rem;
+  height: 1.8rem;
+  border-radius: 4px;
+  border: 0.135em solid rgb(202, 202, 202);
+  margin-top: 16px;
+}
+.btnFechar:hover{
+  cursor: pointer;
+  background-color: rgba(240, 240, 240, 0.911);
+}
+.container{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 -4px 8px rgba(0, 0, 0, 0.1), 4px 0 8px rgba(0, 0, 0, 0.1), -4px 0 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 90%;
+  height: 80vh;
+  margin-top: 20px;
+  padding-top: 8px;
+  padding-right: 12px;
+  padding-left: 12px;
+  padding-bottom: 8px;    
+  background-color: white;
+}
+
+.topo{
+  display: flex;
+  justify-content: space-between;
+}
+
+.topo button{
+  width: 8em !important;
+  height: 2.2rem;   
+  border-radius: 8px;
+  border-style: none;
+  color: white;
+  background-color: rgba(14, 153, 14, 0.699);
+  font-size: 1.2em !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+}
+.topo button:hover{
+  cursor: pointer;
+  background-color: rgba(14, 153, 14, 0.822);
+  transform: translateY(-2px);
+}
+
+.topo input{
+  height: 2.1rem;  
+  margin-bottom: 0px;
+  padding-left: 10px;
+  border-radius: 6px;
+  border: 0.135em solid rgb(202, 202, 202);
+  width: 12rem;    
+}
+
+.titulo{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.containerSpanTitulo{
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.containerSpanTitulo svg{
+  color: #8b8b8b;
+  opacity: 1;
+  margin-right: 4px;
+}
+.containerSpanTitulo span{
+  opacity: 0.7;
+}
+
+.divisor{
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 18px; 
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: #dadada
+}
+
+.status{
+display: flex;
+width: 36%;
+align-items: center;
+
+}
+.radioGroup {
+  display: flex;
+  gap: 1px; /* Espaçamento entre os itens */
+  align-items: center;
+  margin-top: 1px;
+  margin-left: 4px;
+  width: 70%;
+}
+
+.radioGroup label {
+  margin-right: 0px; /* Espaço entre o círculo do rádio e o texto */
+}
+
+.chkStatus{
+  height: 1.2em !important;
+  width: 1.2em !important;
+  margin-bottom: 0px !important;
+}
+
+.chkStatus:hover{
+  cursor: pointer;
+}
+
+#statusLabel{
+  margin-right: 8px;
+}
+
+.tabela, th, td{
+  border-collapse: collapse; 
+  padding: 10px;
+  text-align: left;   
+  margin-top: 7em;
+}
+th{
+  font-size: 0.9em;
+  font-weight: normal;
+  
+}
+td{
+  border-collapse: collapse;
+  border-bottom: 1px solid #dddddd;
+  border-bottom-width: 100%;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+table{
+  width: 98%;
+  height: 400px;
+  margin: auto;
+  border-collapse: collapse;
+  overflow: auto;
+}
+
+.tableWrapper{
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.iconEdit{
+  color:#2185D0 ;
+  font-size: 1.35em;
+  cursor: pointer;
+  margin-right: 0.4em;
+}
+.iconEdit:hover{
+  color:#1c73b6;
+  font-size: 1.36em;
+  background-color: #e9e9e9;
+  transition: 0.4s;
+}
+
+.iconDelete{
+  color: #e24848 ;
+  font-size: 1.4em;
+  cursor: pointer;
+}
+.iconDelete:hover{
+  color: #bb3b3b ;
+  font-size: 1.41em;
+  background-color: #e9e9e9;
+  transition: 0.4s;
+}
+
+.modalOverlay {
+  position: fixed; /* Cobre toda a tela */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.274); /* Fundo escuro com opacidade */
+  z-index: 999; /* Coloca atrás do modal, mas na frente do restante da página */
+}
