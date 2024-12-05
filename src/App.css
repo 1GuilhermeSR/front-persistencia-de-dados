@@ -61,6 +61,9 @@ h2:hover{
 #inputNome{
   margin-top: 2rem;
 }
+#inputTexto{
+  margin-top: 2rem;
+}
 
 .btnSalvar{
   background-color: rgba(14, 153, 14, 0.699);

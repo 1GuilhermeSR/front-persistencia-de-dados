@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from "axios";
 import './App.css';
+import Modal from 'react-modal';
 
 function App() {
   const [aluno, setAluno] = useState({
@@ -14,13 +15,17 @@ function App() {
     cargo: "",
     email: "",
     senha: "",
-    link_image: null, 
+    link_image: null,
+  });
+  const [comentario, setComentario] = useState({
+    texto: "",
   });
   const [previewImage, setPreviewImage] = useState("");
   const [form, setForm] = useState("professor");
 
   const urlProfessor = "localhost:4000/api/professor";
   const urlAluno = "localhost:4000/api/aluno";
+  const urlComentario = "localhost:4000/api/comments";
 
   function limparForm() {
     setProfessor({
@@ -36,6 +41,9 @@ function App() {
       idade: "",
       link_image: null,
     });
+    setComentario({
+      text: "",
+    });
     setPreviewImage("");
   }
 
@@ -49,7 +57,7 @@ function App() {
     debugger
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setProfessor({ ...professor, link_image: file }); 
+      setProfessor({ ...professor, link_image: file });
       setPreviewImage(imageUrl);
     }
   }
@@ -58,8 +66,8 @@ function App() {
     const file = event.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setAluno({ ...aluno, link_image: file }); 
-      setPreviewImage(imageUrl); 
+      setAluno({ ...aluno, link_image: file });
+      setPreviewImage(imageUrl);
     }
   }
 
@@ -70,7 +78,7 @@ function App() {
     formData.append("email", professor.email);
     formData.append("senha", professor.senha);
     formData.append("link_image", professor.link_image);
-    
+
     axios
       .post(urlProfessor, formData, {
         headers: {
@@ -85,14 +93,14 @@ function App() {
         console.error("Erro ao salvar professor:", error);
       });
   }
-  
+
   function salvarAluno() {
     const formData = new FormData();
     formData.append("nome", aluno.nome);
     formData.append("email", aluno.email);
     formData.append("idade", aluno.idade);
     formData.append("link_image", aluno.link_image);
-  
+
     axios
       .post(urlAluno, formData, {
         headers: {
@@ -100,7 +108,7 @@ function App() {
         },
       })
       .then(() => {
-        alert("Aluno salvo com sucesso:")       
+        alert("Aluno salvo com sucesso:")
         limparForm();
       })
       .catch((error) => {
@@ -108,6 +116,24 @@ function App() {
       });
   }
 
+  function salvarComentatio() {
+    const formData = new FormData();
+    formData.append("texto", comentario.texto);
+
+    axios
+      .post(urlComentario, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(() => {
+        alert("Comentario salvo com sucesso:")
+        limparForm();
+      })
+      .catch((error) => {
+        console.error("Erro ao salvar comentario:", error);
+      });
+  }
 
   return (
     <div className="main">
@@ -115,6 +141,7 @@ function App() {
         <div className="containerTipo">
           <h2 onClick={() => alterarForm("professor")} id={form === "professor" ? "sublinhado" : ""}>Professor</h2>
           <h2 onClick={() => alterarForm("aluno")} id={form === "aluno" ? "sublinhado" : ""}>Aluno</h2>
+          <h2 onClick={() => alterarForm("comentario")} id={form === "comentario" ? "sublinhado" : ""}>Comentário</h2>
         </div>
         {form === "professor" ? (
           <div className='containerForm'>
@@ -133,21 +160,27 @@ function App() {
               ) : (<div style={{ marginBottom: "46px" }}></div>)}
               <button className='btnSalvar' onClick={salvarProfessor}>Salvar</button>
             </div>
-          </div>) : (
+          </div>) : form === "aluno" ? (
+            <div className='containerForm'>
+              <div className='containerInput'>
+                <input value={aluno.nome} onChange={(e) => setAluno({ ...aluno, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
+                <input value={aluno.email} onChange={(e) => setAluno({ ...aluno, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
+                <input value={aluno.idade} onChange={(e) => setAluno({ ...aluno, idade: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
+                <input type='file' onChange={(e) => handleAlunoFileChange(e)}></input>
+                {previewImage ? (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    style={{ maxWidth: "180px", marginTop: "16px", marginBottom: "46px" }}
+                  />
+                ) : (<div style={{ marginBottom: "46px" }}></div>)}
+                <button className='btnSalvar' onClick={salvarAluno}>Salvar</button>
+              </div>
+            </div>) : (
           <div className='containerForm'>
             <div className='containerInput'>
-              <input value={aluno.nome} onChange={(e) => setAluno({ ...aluno, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
-              <input value={aluno.email} onChange={(e) => setAluno({ ...aluno, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
-              <input value={aluno.idade} onChange={(e) => setAluno({ ...aluno, idade: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
-              <input type='file' onChange={(e) => handleAlunoFileChange(e)}></input>
-              {previewImage ? (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  style={{ maxWidth: "180px", marginTop: "16px", marginBottom: "46px" }}
-                />
-              ) : (<div style={{ marginBottom: "46px" }}></div>)}
-              <button className='btnSalvar' onClick={salvarAluno}>Salvar</button>
+              <textarea value={comentario.texto} onChange={(e) => setComentario({ ...comentario, texto: e.target.value })} placeholder='Texto' className="inputStyle" id='inputTexto'></textarea>
+              <button className='btnSalvar' onClick={salvarComentatio}>Salvar</button>
             </div>
           </div>)}
       </div>
