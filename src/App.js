@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import './App.css';
 import Comments from './comments/comments';
+import Students from './student/student';
 
 function App() {
   const [aluno, setAluno] = useState({
@@ -30,10 +31,11 @@ function App() {
   const urlProfessor = "localhost:4000/api/professor";
   const urlAluno = "localhost:4000/api/aluno";
   const urlComment = "localhost:4000/api/comments";
-  
+
   const [alunos, setAlunos] = useState([]);
   const [selectedAluno, setSelectedAluno] = useState('');
   const [showComments, setShowComments] = useState(false);
+  const [studentTable, setStudentTable] = useState(0);
 
   useEffect(() => {
     axios.get(urlAluno)
@@ -187,7 +189,7 @@ function App() {
                 <input value={aluno.nome} onChange={(e) => setAluno({ ...aluno, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
                 <input value={aluno.email} onChange={(e) => setAluno({ ...aluno, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
                 <input value={aluno.idade} onChange={(e) => setAluno({ ...aluno, idade: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
-                <input type='file' onChange={(e) => handleAlunoFileChange(e)}></input>
+                <input type='file' onChange={(e) => handleAlunoFileChange(e)} ></input>
                 {previewImage ? (
                   <img
                     src={previewImage}
@@ -195,22 +197,24 @@ function App() {
                     style={{ maxWidth: "180px", marginTop: "16px", marginBottom: "46px" }}
                   />
                 ) : (<div style={{ marginBottom: "46px" }}></div>)}
-                <button className='btnSalvar' onClick={salvarAluno}>Salvar</button>
+                <button className='btnSalvar' onClick={() => {salvarAluno(); setStudentTable(studentTable+1)}}>Salvar</button>
+                <div style={{ marginBottom: "46px" }}></div>
+                {<Students update_table={studentTable}/>}
               </div>
             </div>) : (
           <div className='containerForm'>
             <div className='containerInput'>
               <div className="dropdown-container">
-                <select 
-                  value={selectedAluno} 
+                <select
+                  value={selectedAluno}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
                     if (selectedValue !== "") {
                       setSelectedAluno(selectedValue);
-                      setShowComments(false); 
-                      setTimeout(() => setShowComments(true), 0); 
+                      setShowComments(false);
+                      setTimeout(() => setShowComments(true), 0);
                     } else {
-                      setShowComments(false); 
+                      setShowComments(false);
                     }
                   }}
                   className="inputStyle"
@@ -225,7 +229,7 @@ function App() {
               </div>
               <textarea value={comment.comentario} onChange={(e) => setComment({ ...comment, comentario: e.target.value })} placeholder='Texto' className="inputStyle" id='inputText'></textarea>
               <button className='btnSalvar' onClick={salvarComentatio}>Salvar</button>
-              {showComments && <Comments postId={selectedAluno} />}
+              {showComments && <Comments id_aluno={selectedAluno} />}
             </div>
           </div>
         )}

@@ -111,3 +111,37 @@ h2:hover{
 .comment-box button:hover {
   background-color: #962b4b;
 }
+
+.table {
+  width: 90%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Add this line to round the corners */
+  overflow: hidden; /* Add this line to ensure the rounded corners are visible */
+}
+
+
+.table th, .table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.table th.sortable:hover {
+  cursor: pointer;
+  background-color: #e2e2e2;
+}
