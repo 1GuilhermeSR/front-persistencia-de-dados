@@ -3,21 +3,28 @@ import axios from 'axios'
 import './App.css';
 import { FaListUl, FaRegEdit } from "react-icons/fa";
 import { CiTrash } from "react-icons/ci";
-
+import Comments from './comments/comments';
 
 function App() {
   const [aluno, setAluno] = useState({
+    id: 0,
     nome: "",
     email: "",
     idade: "",
     link_image: null,
   });
   const [professor, setProfessor] = useState({
+    id: 0,
     nome: "",
     cargo: "",
     email: "",
     senha: "",
     link_image: null,
+  });
+  const [comment, setComment] = useState({
+    id_professor: 0,
+    id_aluno: 0,
+    comentario: "",
   });
   const [previewImage, setPreviewImage] = useState("");
   const [form, setForm] = useState("professor");
@@ -25,8 +32,11 @@ function App() {
   const [status, setStatus] = useState("professores");
   const [listaProfessores, setListaProfessores] = useState([]);
   const [listaAlunos, setListaAlunos] = useState([]);
+  const [selectedAluno, setSelectedAluno] = useState('');
+  const [showComments, setShowComments] = useState(false);
   const urlProfessor = "localhost:4000/api/professor";
   const urlAluno = "localhost:4000/api/aluno";
+  const urlComment = "localhost:4000/api/comments";
 
   useEffect(() => {
     buscarProfessores()
@@ -55,6 +65,7 @@ function App() {
 
   function limparForm() {
     setProfessor({
+      id: 0,
       nome: "",
       cargo: "",
       email: "",
@@ -62,10 +73,17 @@ function App() {
       link_image: null,
     });
     setAluno({
+      id: 0,
       nome: "",
       email: "",
       idade: "",
       link_image: null,
+    });
+    setComment({
+      id: 0,
+      id_professor: 0,
+      id_aluno: 0,
+      comentario: '',
     });
     setPreviewImage("");
   }
@@ -139,6 +157,25 @@ function App() {
       });
   }
 
+  function salvarComentatio() {
+    const formData = new FormData();
+    formData.append("comentario", comment.comentario);
+
+    axios
+      .post(urlComment, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then(() => {
+        alert("Comentario salvo com sucesso:")
+        limparForm();
+      })
+      .catch((error) => {
+        console.error("Erro ao salvar comentario:", error);
+      });
+  }
+
   function abrirModal() {
     setIsOpen(true)
   }
@@ -147,25 +184,62 @@ function App() {
   }
 
   function editarProfessor(idProfessor) {
-
+    axios
+      .put(`${urlProfessor}/${idProfessor}`)
+      .then(() => {
+        alert("Professor atualizado com sucesso:")
+        limparForm();
+      })
+      .catch((error) => {
+        console.error("Erro ao atualizar professor:", error);
+      });
+    buscarProfessores();
   }
 
   function removerProfessor(idProfessor) {
-
+    axios
+      .delete(`${urlProfessor}/${idProfessor}`)
+      .then(() => {
+        alert("Professor deletado com sucesso:")
+        limparForm();
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar professor:", error);
+      });
+    buscarProfessores();
   }
 
   function editarAluno(idAluno) {
-
+    axios
+      .put(`${urlAluno}/${idAluno}`)
+      .then(() => {
+        alert("Aluno atualizado com sucesso:")
+        limparForm();
+      })
+      .catch((error) => {
+        console.error("Erro ao atualizar aluno:", error);
+      });
+    buscarAlunos();
   }
-  function removerAluno(idAluno) {
 
+  function removerAluno(idAluno) {
+    axios
+      .delete(`${urlAluno}/${idAluno}`)
+      .then(() => {
+        alert("Aluno deletado com sucesso:")
+        limparForm();
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar aluno:", error);
+      });
+    buscarAlunos();
   }
 
   return (
     <div className="main">
       <div className='container'>
         <div className="titulo">
-          <div className="containerSpanTitulo"> <FaListUl /><span>Lista de professores e alunos</span></div>
+          <div className="containerSpanTitulo"> <FaListUl /><span>Lista de professores, alunos e comentários</span></div>
           <div className="divisor"></div>
         </div>
         <div className="topo">
@@ -247,7 +321,7 @@ function App() {
             </table>
 
           </div>
-        ) : (
+        ) : status == "alunos" ? (
           <div className="tableWrapper">
             <table>
               <thead>
@@ -284,6 +358,31 @@ function App() {
             </table>
 
           </div>
+        ) : (
+          <div>
+            <select
+              value={selectedAluno}
+              onChange={(e) => {
+                const selectedValue = e.target.value;
+                if (selectedValue !== "") {
+                  setSelectedAluno(selectedValue);
+                  setShowComments(false);
+                  setTimeout(() => setShowComments(true), 0);
+                } else {
+                  setShowComments(false);
+                }
+              }}
+              className="inputStyle"
+            >
+              <option value="">Selecione um aluno</option>
+              {listaAlunos.map(aluno => (
+                <option key={aluno._id} value={aluno._id}>
+                  {aluno.nome}
+                </option>
+              ))}
+            </select>
+            {showComments && <Comments id_aluno={selectedAluno} />}
+          </div>
         )}
 
         {isOpen && (
@@ -293,6 +392,7 @@ function App() {
               <div className="containerTipo">
                 <h2 onClick={() => alterarForm("professor")} id={form === "professor" ? "sublinhado" : ""}>Professor</h2>
                 <h2 onClick={() => alterarForm("aluno")} id={form === "aluno" ? "sublinhado" : ""}>Aluno</h2>
+                <h2 onClick={() => alterarForm("comentario")} id={form === "comentario" ? "sublinhado" : ""}>Comentário</h2>
               </div>
               {form === "professor" ? (
                 <div className='containerForm'>
@@ -312,24 +412,49 @@ function App() {
                     <button className='btnSalvar' onClick={salvarProfessor}>Salvar</button>
                     <button className='btnFechar' onClick={fecharModal}>Fechar</button>
                   </div>
-                </div>) : (
+                </div>) : form === "aluno" ? (
+                  <div className='containerForm'>
+                    <div className='containerInput'>
+                      <input value={aluno.nome} onChange={(e) => setAluno({ ...aluno, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
+                      <input value={aluno.email} onChange={(e) => setAluno({ ...aluno, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
+                      <input value={aluno.idade} onChange={(e) => setAluno({ ...aluno, idade: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
+                      <input type='file' onChange={(e) => handleAlunoFileChange(e)}></input>
+                      {previewImage ? (
+                        <img
+                          src={previewImage}
+                          alt="Preview"
+                          style={{ maxWidth: "180px", marginTop: "16px", maxHeight: "110px", marginBottom: "46px" }}
+                        />
+                      ) : (<div style={{ marginBottom: "46px" }}></div>)}
+                      <button className='btnSalvar' onClick={salvarAluno}>Salvar</button>
+                      <button className='btnFechar' onClick={fecharModal}>Fechar</button>
+                    </div>
+                  </div>) : (
                 <div className='containerForm'>
                   <div className='containerInput'>
-                    <input value={aluno.nome} onChange={(e) => setAluno({ ...aluno, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
-                    <input value={aluno.email} onChange={(e) => setAluno({ ...aluno, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
-                    <input value={aluno.idade} onChange={(e) => setAluno({ ...aluno, idade: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
-                    <input type='file' onChange={(e) => handleAlunoFileChange(e)}></input>
-                    {previewImage ? (
-                      <img
-                        src={previewImage}
-                        alt="Preview"
-                        style={{ maxWidth: "180px", marginTop: "16px", maxHeight: "110px", marginBottom: "46px" }}
-                      />
-                    ) : (<div style={{ marginBottom: "46px" }}></div>)}
-                    <button className='btnSalvar' onClick={salvarAluno}>Salvar</button>
+                    <div className="dropdown-container" id='inputNome'>
+                      <select
+                        value={selectedAluno}
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          setSelectedAluno(selectedValue);
+                        }}
+                        className="inputStyle"
+                      >
+                        <option value="">Selecione um aluno</option>
+                        {listaAlunos.map(aluno => (
+                          <option key={aluno._id} value={aluno._id}>
+                            {aluno.nome}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <textarea value={comment.comentario} onChange={(e) => setComment({ ...comment, comentario: e.target.value })} placeholder='Texto' className="inputStyle" id='inputText'></textarea>
+                    <button className='btnSalvar' onClick={salvarComentatio}>Salvar</button>
                     <button className='btnFechar' onClick={fecharModal}>Fechar</button>
                   </div>
-                </div>)}
+                </div>
+              )}
             </div>
 
           </div>
