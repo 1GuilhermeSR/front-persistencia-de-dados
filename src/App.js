@@ -346,11 +346,11 @@ function App() {
                     <td>
                       <FaRegEdit
                         className="iconEdit"
-                        onClick={() => editarAluno(aluno.id)}
+                        onClick={() => editarAluno(aluno.ID)}
                       />
                       <CiTrash
                         className="iconDelete"
-                        onClick={() => removerAluno(aluno.id)}
+                        onClick={() => removerAluno(aluno.ID)}
                       />
                     </td>
                   </tr>

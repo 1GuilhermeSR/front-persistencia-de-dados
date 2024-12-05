@@ -11,13 +11,14 @@ const Comments = ({ id_aluno: idAluno }) => {
         const fetchComments = async () => {
             try {
                 const response = await axios.get(`${urlComment}/${idAluno}`);
+                console.log(response);
                 if (response.status !== 200) {
-                    throw new Error('Failed to fetch comments');
+                    throw new Error(response.data);
                 }
                 setListaComments(Array.isArray(response.data) ? response.data : [response.data]);
                 setLoading(false);
             } catch (err) {
-                setError(err.message);
+                setError(err.response ? err.response.data : err.message);
                 setLoading(false);
             }
         };
