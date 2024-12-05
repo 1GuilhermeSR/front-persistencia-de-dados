@@ -184,18 +184,11 @@ function App() {
     setIsOpen(false)
   }
 
-  function editarProfessor(idProfessor) {
-    axios
-      .put(`${urlProfessor}/${idProfessor}`)
-      .then(() => {
-        alert("Professor atualizado com sucesso:")
-        limparForm();
-      })
-      .catch((error) => {
-        console.error("Erro ao atualizar professor:", error);
-      });
-    buscarProfessores();
-  }
+  const editarProfessor = (id) => {
+    const professor = listaProfessores.find(prof => prof.ID === id);
+    setProfessor(professor);
+    setIsOpen(true);
+  };
 
   function removerProfessor(idProfessor) {
     axios
@@ -276,7 +269,7 @@ function App() {
                 name="status"
                 value="comentarios"
                 checked={status == 'comentarios'}
-                onChange={handleStatusChange}
+                onChange={(e) => {handleStatusChange(e); setSelectedAluno("")}}
                 className="chkStatus"
               />
               <label htmlFor="comentarios" className="chkLabel">Comentarios</label>
@@ -399,10 +392,10 @@ function App() {
               {form === "professor" ? (
                 <div className='containerForm'>
                   <div className='containerInput'>
-                    <input value={professor.nome} onChange={(e) => setProfessor({ ...professor, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
-                    <input value={professor.cargo} onChange={(e) => setProfessor({ ...professor, cargo: e.target.value })} placeholder='Cargo' type='text' className="inputStyle"></input>
-                    <input value={professor.email} onChange={(e) => setProfessor({ ...professor, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
-                    <input value={professor.senha} onChange={(e) => setProfessor({ ...professor, senha: e.target.value })} placeholder='Senha' type='text' className="inputStyle"></input>
+                    <input value={professor.NOME} onChange={(e) => setProfessor({ ...professor, NOME: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
+                    <input value={professor.CARGO} onChange={(e) => setProfessor({ ...professor, CARGO: e.target.value })} placeholder='Cargo' type='text' className="inputStyle"></input>
+                    <input value={professor.EMAIL} onChange={(e) => setProfessor({ ...professor, EMAIL: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
+                    <input value={professor.PASSWORD} onChange={(e) => setProfessor({ ...professor, PASSWORD: e.target.value })} placeholder='Senha' type='text' className="inputStyle"></input>
                     <input type='file' onChange={(e) => handleProfessorFileChange(e)}></input>
                     {previewImage ? (
                       <img
