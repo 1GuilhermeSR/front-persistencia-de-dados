@@ -14,7 +14,6 @@ const Comments = ({ id_aluno: idAluno }) => {
     async function buscarComentarios() {
         try {
             const response = await axios.get(`${urlComment}/${idAluno}`);
-            console.log(response);
             if (response.status !== 200) {
                 throw new Error(response.data);
             }

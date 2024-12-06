@@ -7,19 +7,19 @@ import Comments from './comments/comments';
 
 function App() {
   const [aluno, setAluno] = useState({
-    id: 0,
-    nome: "",
-    email: "",
-    idade: "",
-    link_image: null,
+    ID: 0,
+    NOME: "",
+    EMAIL: "",
+    IDADE: "",
+    LINK_IMAGE: null,
   });
   const [professor, setProfessor] = useState({
-    id: 0,
-    nome: "",
-    cargo: "",
-    email: "",
-    senha: "",
-    link_image: null,
+    ID: 0,
+    NOME: "",
+    CARGO: "",
+    EMAIL: "",
+    PASSWORD: "",
+    LINK_IMAGE: null,
   });
   const [comment, setComment] = useState({
     id_professor: 0,
@@ -51,6 +51,7 @@ function App() {
       console.error('Erro ao buscar Professores:', error);
     }
   }
+
   async function buscarAlunos() {
     try {
       var response = await axios.get(urlAluno);
@@ -59,28 +60,29 @@ function App() {
       console.error('Erro ao buscar Alunos:', error);
     }
   }
+
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
   };
 
   function limparForm() {
     setProfessor({
-      id: 0,
-      nome: "",
-      cargo: "",
-      email: "",
-      senha: "",
-      link_image: null,
+      ID: 0,
+      NOME: "",
+      CARGO: "",
+      EMAIL: "",
+      PASSWORD: "",
+      LINK_IMAGE: null,
     });
     setAluno({
-      id: 0,
-      nome: "",
-      email: "",
-      idade: "",
-      link_image: null,
+      ID: 0,
+      NOME: "",
+      EMAIL: "",
+      IDADE: "",
+      LINK_IMAGE: null,
     });
     setComment({
-      id: 0,
+      ID: 0,
       id_professor: 0,
       id_aluno: 0,
       comentario: '',
@@ -98,7 +100,7 @@ function App() {
     debugger
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setProfessor({ ...professor, link_image: file });
+      setProfessor({ ...professor, LINK_IMAGE: file });
       setPreviewImage(imageUrl);
     }
   }
@@ -107,53 +109,65 @@ function App() {
     const file = event.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setAluno({ ...aluno, link_image: file });
+      setAluno({ ...aluno, LINK_IMAGE: file });
       setPreviewImage(imageUrl);
     }
   }
 
   function salvarProfessor() {
     const formData = new FormData();
-    formData.append("NOME", professor.nome);
-    formData.append("CARGO", professor.cargo);
-    formData.append("EMAIL", professor.email);
-    formData.append("PASSWORD", professor.senha);
-    formData.append("LINK_IMAGE", professor.link_image);
+    formData.append("NOME", professor.NOME);
+    formData.append("CARGO", professor.CARGO);
+    formData.append("EMAIL", professor.EMAIL);
+    formData.append("PASSWORD", professor.PASSWORD);
+    formData.append("LINK_IMAGE", professor.LINK_IMAGE);
 
-    axios
-      .post(urlProfessor, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+    const url = professor.ID ? `${urlProfessor}/${professor.ID}` : urlProfessor;
+    const method = professor.ID ? 'put' : 'post';
+
+    axios({
+      method: method,
+      url: url,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
       .then(() => {
-        alert("Professor salvo com sucesso:");
+        alert(`Professor ${professor.ID ? 'atualizado' : 'salvo'} com sucesso:`);
         limparForm();
+        fecharModal();
       })
       .catch((error) => {
-        console.error("Erro ao salvar professor:", error);
+        console.error(`Erro ao ${professor.ID ? 'atualizar' : 'salvar'} professor:`, error);
       });
   }
 
   function salvarAluno() {
     const formData = new FormData();
-    formData.append("nome", aluno.nome);
-    formData.append("email", aluno.email);
-    formData.append("idade", aluno.idade);
-    formData.append("link_image", aluno.link_image);
+    formData.append("NOME", aluno.NOME);
+    formData.append("EMAIL", aluno.EMAIL);
+    formData.append("IDADE", aluno.IDADE);
+    formData.append("LINK_IMAGE", aluno.LINK_IMAGE);
 
-    axios
-      .post(urlAluno, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+    const url = aluno.ID ? `${urlAluno}/${aluno.ID}` : urlAluno;
+    const method = aluno.ID ? 'put' : 'post';
+
+    axios({
+      method: method,
+      url: url,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
       .then(() => {
-        alert("Aluno salvo com sucesso:")
+        alert(`Aluno ${aluno.ID ? 'atualizado' : 'salvo'} com sucesso:`);
         limparForm();
+        fecharModal();
       })
       .catch((error) => {
-        console.error("Erro ao salvar aluno:", error);
+        console.error(`Erro ao ${aluno.ID ? 'atualizar' : 'salvar'} aluno:`, error);
       });
   }
 
@@ -181,16 +195,21 @@ function App() {
     setIsOpen(true)
   }
   function fecharModal() {
-    setIsOpen(false)
+    setIsOpen(false);
+    if (form === "professor") {
+      buscarProfessores();
+    } else {
+      buscarAlunos();
+    }
   }
 
-  const editarProfessor = (id) => {
-    const professor = listaProfessores.find(prof => prof.ID === id);
+  const editarProfessor = (ID) => {
+    const professor = listaProfessores.find(prof => prof.ID === ID);
     setProfessor(professor);
     setIsOpen(true);
   };
 
-  function removerProfessor(idProfessor) {
+  async function removerProfessor(idProfessor) {
     axios
       .delete(`${urlProfessor}/${idProfessor}`)
       .then(() => {
@@ -200,20 +219,15 @@ function App() {
       .catch((error) => {
         console.error("Erro ao deletar professor:", error);
       });
-    buscarProfessores();
+
+    await buscarProfessores();
   }
 
   function editarAluno(idAluno) {
-    axios
-      .put(`${urlAluno}/${idAluno}`)
-      .then(() => {
-        alert("Aluno atualizado com sucesso:")
-        limparForm();
-      })
-      .catch((error) => {
-        console.error("Erro ao atualizar aluno:", error);
-      });
-    buscarAlunos();
+    const aluno = listaAlunos.find(alu => alu.ID === idAluno);
+    setAluno(aluno);
+    setForm("aluno");
+    setIsOpen(true);
   }
 
   function removerAluno(idAluno) {
@@ -269,7 +283,7 @@ function App() {
                 name="status"
                 value="comentarios"
                 checked={status == 'comentarios'}
-                onChange={(e) => {handleStatusChange(e); setSelectedAluno("")}}
+                onChange={(e) => { handleStatusChange(e); setSelectedAluno("") }}
                 className="chkStatus"
               />
               <label htmlFor="comentarios" className="chkLabel">Comentarios</label>
@@ -298,7 +312,7 @@ function App() {
                     <td>{professor.NOME}</td>
                     <td>{professor.CARGO}</td>
                     <td>{professor.EMAIL}</td>
-                    <td><img src={professor.LINK_IMAGE} alt='Professor Image'/></td>
+                    <td><img src={professor.LINK_IMAGE} alt='Professor Image' /></td>
                     <td>
                       <FaRegEdit
                         className="iconEdit"
@@ -335,7 +349,7 @@ function App() {
                     <td>{aluno.NOME}</td>
                     <td>{aluno.IDADE}</td>
                     <td>{aluno.EMAIL}</td>
-                    <td><img src={aluno.LINK_IMAGE} alt='Aluno Image'/></td>
+                    <td><img src={aluno.LINK_IMAGE} alt='Aluno Image' /></td>
                     <td>
                       <FaRegEdit
                         className="iconEdit"
@@ -364,6 +378,7 @@ function App() {
                   setShowComments(false);
                   setTimeout(() => setShowComments(true), 0);
                 } else {
+                  setSelectedAluno("");
                   setShowComments(false);
                 }
               }}
@@ -403,16 +418,24 @@ function App() {
                         alt="Preview"
                         style={{ maxWidth: "180px", marginTop: "16px", maxHeight: "110px", marginBottom: "46px" }}
                       />
-                    ) : (<div style={{ marginBottom: "46px" }}></div>)}
+                    ) : professor.LINK_IMAGE ? (
+                      <img
+                        src={professor.LINK_IMAGE}
+                        alt="Professor"
+                        style={{ maxWidth: "180px", marginTop: "16px", maxHeight: "110px", marginBottom: "46px" }}
+                      />
+                    ) : (
+                      <div style={{ marginBottom: "46px" }}></div>
+                    )}
                     <button className='btnSalvar' onClick={salvarProfessor}>Salvar</button>
-                    <button className='btnFechar' onClick={fecharModal}>Fechar</button>
+                    <button className='btnFechar' onClick={() => { fecharModal(); limparForm(); buscarProfessores() }}>Fechar</button>
                   </div>
                 </div>) : form === "aluno" ? (
                   <div className='containerForm'>
                     <div className='containerInput'>
-                      <input value={aluno.nome} onChange={(e) => setAluno({ ...aluno, nome: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
-                      <input value={aluno.email} onChange={(e) => setAluno({ ...aluno, email: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
-                      <input value={aluno.idade} onChange={(e) => setAluno({ ...aluno, idade: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
+                      <input value={aluno.NOME} onChange={(e) => setAluno({ ...aluno, NOME: e.target.value })} placeholder='Nome' type='text' className="inputStyle" id='inputNome'></input>
+                      <input value={aluno.EMAIL} onChange={(e) => setAluno({ ...aluno, EMAIL: e.target.value })} placeholder='Email' type='text' className="inputStyle"></input>
+                      <input value={aluno.IDADE} onChange={(e) => setAluno({ ...aluno, IDADE: e.target.value })} placeholder='Idade' type='number' className="inputStyle"></input>
                       <input type='file' onChange={(e) => handleAlunoFileChange(e)}></input>
                       {previewImage ? (
                         <img
@@ -420,9 +443,17 @@ function App() {
                           alt="Preview"
                           style={{ maxWidth: "180px", marginTop: "16px", maxHeight: "110px", marginBottom: "46px" }}
                         />
-                      ) : (<div style={{ marginBottom: "46px" }}></div>)}
+                      ) : aluno.LINK_IMAGE ? (
+                        <img
+                          src={aluno.LINK_IMAGE}
+                          alt="Aluno"
+                          style={{ maxWidth: "180px", marginTop: "16px", maxHeight: "110px", marginBottom: "46px" }}
+                        />
+                      ) : (
+                        <div style={{ marginBottom: "46px" }}></div>
+                      )}
                       <button className='btnSalvar' onClick={salvarAluno}>Salvar</button>
-                      <button className='btnFechar' onClick={fecharModal}>Fechar</button>
+                      <button className='btnFechar' onClick={() => { fecharModal(); limparForm() }}>Fechar</button>
                     </div>
                   </div>) : (
                 <div className='containerForm'>
@@ -433,7 +464,11 @@ function App() {
                         value={selectedAluno}
                         onChange={(e) => {
                           const selectedValue = e.target.value;
-                          setSelectedAluno(selectedValue);
+                          if (selectedValue === "") {
+                            setSelectedAluno("");
+                          } else {
+                            setSelectedAluno(selectedValue);
+                          }
                         }}
                         className="inputStyle"
                       >
@@ -447,7 +482,7 @@ function App() {
                     </div>
                     <textarea value={comment.comentario} onChange={(e) => setComment({ ...comment, comentario: e.target.value })} placeholder='Texto' className="inputStyle" id='inputText'></textarea>
                     <button className='btnSalvar' onClick={salvarComentatio}>Salvar</button>
-                    <button className='btnFechar' onClick={fecharModal}>Fechar</button>
+                    <button className='btnFechar' onClick={() => { fecharModal(); limparForm() }}>Fechar</button>
                   </div>
                 </div>
               )}
